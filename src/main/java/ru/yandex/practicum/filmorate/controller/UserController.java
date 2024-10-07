@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/users")
 public class UserController {
 
@@ -27,17 +29,21 @@ public class UserController {
 
     public void checkExceptions(User user) throws ParseException {
         if (user.getEmail().equals("") || !user.getEmail().contains("@")){
+            log.debug("Неправильный или пустой email");
             throw new InvalidEmailException("InvalidEmailException");
         }
         if (user.getLogin().equals("") || !user.getLogin().contains(" ")){
+            log.debug("Пустой логин");
             throw new InvalidLoginException("InvalidLoginException");
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date date = simpleDateFormat.parse(String.valueOf(LocalDate.now()));
         if (user.getBirthday().after(date)){
+            log.debug("Неправильная дата");
             throw new InvalidDateException("InvalidDateException");
         }
         if (user.getName().equals("")){
+            log.info("Не указано имя");
             user.setName(user.getLogin());
         }
     }
@@ -51,21 +57,22 @@ public class UserController {
         }
         user.setId(ID++);
         users.put(user.getEmail(), user);
+        log.info("Добавлен новый user {}", user);
         return user;
     }
 
     @PutMapping("")
     public User update(@RequestBody User user) throws ParseException {
         checkExceptions(user);
-        if (!users.containsKey(user.getEmail())) {
-            create(user);
-        } else {
+        if (users.containsKey(user.getEmail())) {
             User user1 = users.get(user.getEmail());
             user1.setBirthday(user.getBirthday());
             user1.setName(user.getName());
             user1.setLogin(user.getLogin());
+            log.info("Обновлен user {}", user);
+            return users.get(user.getEmail());
         }
-        return users.get(user.getEmail());
+        return create(user);
     }
 
 
