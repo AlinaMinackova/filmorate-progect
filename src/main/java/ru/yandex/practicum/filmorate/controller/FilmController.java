@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +18,13 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
-    private HashMap<String, Film> films = new HashMap<String, Film>();
+    private final HashMap<String, Film> films = new HashMap<String, Film>();
     private static int ID = 0;
 
     @GetMapping
     public List<Film> get() {
         //log.info("Количество залогированных юзеров: {}", users.size());
-        return (List<Film>) films.values();
+        return new ArrayList<Film>(films.values());
     }
 
     public void checkExceptions(Film film) throws ParseException {
@@ -34,7 +36,7 @@ public class FilmController {
             log.debug("Описание фильма > 200 символов");
             throw new MaxLengthDescriptionException("MaxLengthDescriptionExceptionMore200");
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("1895-12-28");
         if (film.getReleaseDate().before(date)){
             log.debug("Фильм не может быть выпущен раньше 28 декабря 1895 года");

@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +19,13 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private HashMap<String, User> users =new HashMap<String, User>();
+    private final HashMap<String, User> users =new HashMap<String, User>();
     private static int ID = 0;
 
     @GetMapping
     public List<User> get() {
         //log.info("Количество залогированных юзеров: {}", users.size());
-        return (List<User>) users.values();
+        return new ArrayList<User>(users.values());
     }
 
     public void checkExceptions(User user) throws ParseException {
@@ -32,11 +33,11 @@ public class UserController {
             log.debug("Неправильный или пустой email");
             throw new InvalidEmailException("InvalidEmailException");
         }
-        if (user.getLogin().equals("") || !user.getLogin().contains(" ")){
+        if (user.getLogin().equals("") || user.getLogin().contains(" ")){
             log.debug("Пустой логин");
             throw new InvalidLoginException("InvalidLoginException");
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse(String.valueOf(LocalDate.now()));
         if (user.getBirthday().after(date)){
             log.debug("Неправильная дата");
