@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,9 +24,11 @@ public class User {
     @EqualsAndHashCode.Exclude
     private int id;
     @NonNull
+    @Email
     private String email;
     @NonNull
     @EqualsAndHashCode.Exclude
+    @NotBlank
     private String login;
     @NonNull
     @EqualsAndHashCode.Exclude

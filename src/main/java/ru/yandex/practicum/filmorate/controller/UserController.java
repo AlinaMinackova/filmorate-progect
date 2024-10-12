@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) throws ParseException {
+    public User create(@Valid @RequestBody User user) throws ParseException {
         checkExceptions(user);
         //log.info("Добавлен пост: {}", post);
         if (users.containsKey(user.getEmail())){
@@ -63,7 +64,7 @@ public class UserController {
     }
 
     @PutMapping("")
-    public User update(@RequestBody User user) throws ParseException {
+    public User update(@Valid @RequestBody User user) throws ParseException {
         checkExceptions(user);
         if (users.containsKey(user.getEmail())) {
             User user1 = users.get(user.getEmail());

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
@@ -49,7 +50,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@RequestBody Film film) throws ParseException {
+    public Film create(@Valid @RequestBody Film film) throws ParseException {
         //log.info("Добавлен пост: {}", post);
         checkExceptions(film);
         if (films.containsKey(film.getName())){
@@ -62,7 +63,7 @@ public class FilmController {
     }
 
     @PutMapping("")
-    public Film update(@RequestBody Film film) throws ParseException {
+    public Film update(@Valid @RequestBody Film film) throws ParseException {
         checkExceptions(film);
         if (films.containsKey(film.getName())) {
             Film film1 = films.get(film.getName());

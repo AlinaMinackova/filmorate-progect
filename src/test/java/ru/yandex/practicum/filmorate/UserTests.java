@@ -6,7 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exceptions.InvalidDateException;
+import ru.yandex.practicum.filmorate.exceptions.InvalidDurationException;
 import ru.yandex.practicum.filmorate.exceptions.InvalidEmailException;
+import ru.yandex.practicum.filmorate.exceptions.InvalidLoginException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.text.ParseException;
@@ -14,77 +17,54 @@ import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @SpringBootTest
 class UserTests {
 
+	private static final Calendar calendar = Calendar.getInstance();
+	static {
+		calendar.set(2022, Calendar.MARCH, 5);
+	}
+	private static final Date date = calendar.getTime();
+
 	@Test
 	void createCorrectUser() throws ParseException {
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2022, Calendar.MARCH, 5);
-		Date date = calendar.getTime();
-
 		User user = new User("name@.yandex.ru", "nick", "Nick", date);
 		UserController userController = new UserController();
 		userController.create(user);
-
 		Assertions.assertEquals(userController.get().get(0), user);
 	}
 
 	@Test
 	void createInCorrectEmailUser(){
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2022, Calendar.MARCH, 5);
-
-		Date date = calendar.getTime();
 		User user = new User("nameyandex.ru", "nick", "Nick", date);
 		User user2 = new User("", "nick", "Nick", date);
 
 		UserController userController = new UserController();
+		assertThrows(InvalidEmailException.class,
+				() -> userController.create(user));
 
-		try {
-			userController.create(user);
-		} catch (Exception e){
-			Assertions.assertEquals("InvalidEmailException", e.getMessage());
-		}
-
-		try {
-			userController.create(user2);
-		} catch (Exception e){
-			Assertions.assertEquals("InvalidEmailException", e.getMessage());
-		}
+		assertThrows(InvalidEmailException.class,
+				() -> userController.create(user2));
 	}
 
 	@Test
 	void createInCorrectLoginUser(){
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2022, Calendar.MARCH, 5);
-
-		Date date = calendar.getTime();
 		User user = new User("name@yandex.ru", "", "Nick", date);
 		User user2 = new User("name@yandex.ru", "nick cool", "Nick", date);
 
 		UserController userController = new UserController();
 
-		try {
-			userController.create(user);
-		} catch (Exception e){
-			Assertions.assertEquals("InvalidLoginException", e.getMessage());
-		}
+		assertThrows(InvalidLoginException.class,
+				() -> userController.create(user));
 
-		try {
-			userController.create(user2);
-		} catch (Exception e){
-			Assertions.assertEquals("InvalidLoginException", e.getMessage());
-		}
+		assertThrows(InvalidLoginException.class,
+				() -> userController.create(user2));
 	}
 
 	@Test
 	void createEmptyNameUser() throws ParseException {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2022, Calendar.MARCH, 5);
-
-		Date date = calendar.getTime();
 		User user = new User("name@yandex.ru", "Nick", "", date);
 
 		UserController userController = new UserController();
@@ -103,18 +83,12 @@ class UserTests {
 		User user = new User("name@yandex.ru", "Nick", "Nick", date);
 
 		UserController userController = new UserController();
-		try {
-			userController.create(user);
-		} catch (Exception e){
-			Assertions.assertEquals("InvalidDateException", e.getMessage());
-		}
+		assertThrows(InvalidDateException.class,
+				() -> userController.create(user));
 	}
 
 	@Test
 	void updateUser() throws ParseException {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2022, Calendar.MARCH, 5);
-		Date date = calendar.getTime();
 
 		Calendar calendar2 = Calendar.getInstance();
 		calendar2.set(2024, Calendar.MARCH, 5);
