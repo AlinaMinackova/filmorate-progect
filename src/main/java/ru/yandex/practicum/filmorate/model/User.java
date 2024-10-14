@@ -24,7 +24,6 @@ public class User {
     @EqualsAndHashCode.Exclude
     private int id;
     @NonNull
-    @Email
     private String email;
     @NonNull
     @EqualsAndHashCode.Exclude
