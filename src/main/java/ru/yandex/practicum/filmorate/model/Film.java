@@ -7,17 +7,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 //@AllArgsConstructor
 public class Film {
-
-    public Film(@NonNull String name, @NonNull String description, @NonNull Date releaseDate, @NonNull Double duration) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
 
     @NonNull
     @EqualsAndHashCode.Exclude
@@ -34,4 +29,14 @@ public class Film {
     @NonNull
     @EqualsAndHashCode.Exclude
     private Double duration;
+    @EqualsAndHashCode.Exclude
+    private Set<Integer> likes;
+
+    public Film(@NonNull String name, @NonNull String description, @NonNull Date releaseDate, @NonNull Double duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.likes = new HashSet<>();
+    }
 }

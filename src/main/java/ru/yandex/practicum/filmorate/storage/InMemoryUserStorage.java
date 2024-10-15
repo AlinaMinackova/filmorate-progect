@@ -60,7 +60,7 @@ public class InMemoryUserStorage implements UserStorage{
         if (users.containsKey(user.getEmail())){
             throw new UserAlreadyExistsException("UserAlreadyExistsException");
         }
-        user.setId(ID++);
+        user.setId(++ID);
         users.put(user.getEmail(), user);
         log.info("Добавлен новый user {}", user);
         return user;

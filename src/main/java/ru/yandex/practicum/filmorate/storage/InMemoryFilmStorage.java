@@ -56,7 +56,7 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (films.containsKey(film.getName())){
             throw new FilmAlreadyExistsException("FilmAlreadyExistsException");
         }
-        film.setId(ID++);
+        film.setId(++ID);
         films.put(film.getName(), film);
         log.info("Добавлен новый фильм {}", film);
         return film;
