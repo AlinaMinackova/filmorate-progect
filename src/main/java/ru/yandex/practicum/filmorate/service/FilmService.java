@@ -26,11 +26,11 @@ public class FilmService {
             throw new IncorrectCountValueException("IncorrectCountValueException");
         }
         return filmStorage.get().stream()
-                .sorted(Comparator.comparing(x -> x.getLikes().size()))
+                .sorted(Film::compareTo)
                 // сортировка по возрастанию
                 //можно переопределить метод compareTo в классе Film
-                //и просто вызвать sorted()
-                .sorted(Collections.reverseOrder())
+                //и просто вызвать sorted(Film::compareTo)
+                //.sorted(Collections.reverseOrder())
                 //переворачиваем
                 .limit(count)
                 .toList();

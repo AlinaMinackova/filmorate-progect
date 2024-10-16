@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Data
 //@AllArgsConstructor
-public class User {
+public class User implements Comparable<User>{
 
     @NonNull
     @EqualsAndHashCode.Exclude
@@ -40,5 +40,10 @@ public class User {
         this.name = name;
         this.birthday = birthday;
         this.friends = new HashSet<>();
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return 0;
     }
 }

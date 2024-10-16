@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -12,7 +11,7 @@ import java.util.Set;
 
 @Data
 //@AllArgsConstructor
-public class Film {
+public class Film implements Comparable<Film>{
 
     @NonNull
     @EqualsAndHashCode.Exclude
@@ -38,5 +37,10 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.likes = new HashSet<>();
+    }
+
+    @Override
+    public int compareTo(Film o) {
+        return this.likes.size() >= o.likes.size() ? -1 : 1;
     }
 }
