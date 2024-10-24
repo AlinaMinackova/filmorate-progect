@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +16,6 @@ import java.util.Set;
 //@AllArgsConstructor
 public class User implements Comparable<User>{
 
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    private int id;
     @NonNull
     private String email;
     @NonNull
@@ -30,16 +27,13 @@ public class User implements Comparable<User>{
     private String name;
     @NonNull
     @EqualsAndHashCode.Exclude
-    private Date birthday;
-    @EqualsAndHashCode.Exclude
-    private Set<Integer> friends;
+    private LocalDate birthday;
 
-    public User(@NonNull String email, @NonNull String login, @NonNull String name, @NonNull Date birthday) {
+    public User(@NonNull String email, @NonNull String login, @NonNull String name, @NonNull LocalDate birthday) {
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-        this.friends = new HashSet<>();
     }
 
     @Override
