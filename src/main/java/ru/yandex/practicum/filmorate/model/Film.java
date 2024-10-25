@@ -6,13 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
-//@AllArgsConstructor
-public class Film{
+public class Film {
 
     @NonNull
     @NotBlank

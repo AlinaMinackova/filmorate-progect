@@ -5,13 +5,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
-import ru.yandex.practicum.filmorate.exceptions.FilmAlreadyExistsException;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,11 +28,13 @@ public class FilmDbStorage implements FilmStorage {
             @Override
             public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String name = rs.getString("name");
-                String description = rs.getString("description");;
+                String description = rs.getString("description");
+                ;
                 LocalDate releaseDate = LocalDate.parse(rs.getString("release_date"));
                 Double duration = Double.valueOf(rs.getString("duration"));
                 return new Film(name, description, releaseDate, duration);
-            }});
+            }
+        });
     }
 
     @Override
@@ -46,8 +45,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getByName(String name) {
-        SqlRowSet filmRow = jdbcTemplate.queryForRowSet( "select * from films where name = ?", name);
-        if (filmRow.next()){
+        SqlRowSet filmRow = jdbcTemplate.queryForRowSet("select * from films where name = ?", name);
+        if (filmRow.next()) {
             return new Film(
                     filmRow.getString("name"),
                     filmRow.getString("description"),
@@ -58,21 +57,15 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film create(Film film) throws ParseException {
-        Film film1 = getByName(film.getName());
-        if(film1 != null){
-            throw new FilmAlreadyExistsException("FilmAlreadyExists");
-        } String sql = "insert into films (name, description, release_date, duration) values (?, ?, ?, ?)";
+    public Film create(Film film) {
+        String sql = "insert into films (name, description, release_date, duration) values (?, ?, ?, ?)";
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration());
         return film;
     }
 
     @Override
-    public Film update(Film film) throws ParseException {
-        Film film1 = getByName(film.getName());
-        if(film1 == null){
-            throw new NotFoundFilmException("NotFoundFilm");
-        } String sql = "update films set (description, release_date, duration) = (?, ?, ?) where name = ?";
+    public Film update(Film film) {
+        String sql = "update films set (description, release_date, duration) = (?, ?, ?) where name = ?";
         jdbcTemplate.update(sql, film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getName());
         return film;
     }

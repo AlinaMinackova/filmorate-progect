@@ -9,9 +9,9 @@ import ru.yandex.practicum.filmorate.dao.UserStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -28,19 +28,23 @@ public class UserService {
         return new ArrayList<User>(userStorage.get());
     }
 
-//    public User getId(int id) {
-//        List<Integer> usersId = userStorage.get().stream().map(x -> x.getId()).toList();
-//        if (id <= 0 || !usersId.contains(id)){
-//            throw new NotFoundUserException("NotFoundUserException");
-//        }
-//        return userStorage.get().stream().filter(x -> x.getId() == id).toList().get(0);
-//    }
-
     public User create(User user) throws ParseException {
+        checkExceptions(user);
+        User user1 = userStorage.getByEmail(user.getEmail());
+        if (user1 != null) {
+            log.debug("юзер уже существует");
+            throw new UserAlreadyExistsException("UserAlreadyExists");
+        }
         return userStorage.create(user);
     }
 
     public User update(User user) throws ParseException {
+        checkExceptions(user);
+        User user1 = getByEmail(user.getEmail());
+        if (user1 == null) {
+            log.debug("юзер не найден");
+            throw new NotFoundUserException("NotFoundUser");
+        }
         return userStorage.update(user);
     }
 
@@ -49,7 +53,32 @@ public class UserService {
     }
 
     public User getByEmail(String email) {
-        return userStorage.getByEmail(email);
+        User user = userStorage.getByEmail(email);
+        if (user == null) {
+            log.debug("юзер не найден");
+            throw new NotFoundUserException("NotFoundUser");
+        }
+        return user;
+    }
+
+    public void checkExceptions(User user) throws ParseException {
+        if (user.getEmail().equals("") || !user.getEmail().contains("@")) {
+            log.debug("Неправильный или пустой email");
+            throw new InvalidEmailException("InvalidEmailException");
+        }
+        if (user.getLogin().equals("") || user.getLogin().contains(" ")) {
+            log.debug("Пустой логин");
+            throw new InvalidLoginException("InvalidLoginException");
+        }
+        LocalDate date = LocalDate.now();
+        if (user.getBirthday().isAfter(date)) {
+            log.debug("Неправильная дата");
+            throw new InvalidDateException("InvalidDateException");
+        }
+        if (user.getName().equals("")) {
+            log.info("Не указано имя");
+            user.setName(user.getLogin());
+        }
     }
 
 //

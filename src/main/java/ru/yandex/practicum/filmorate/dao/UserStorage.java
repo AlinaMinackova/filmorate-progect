@@ -14,8 +14,8 @@ public interface UserStorage {
     User update(User user) throws ParseException;
 
     User getByEmail(String email);
-    void delete(String email);
 
+    void delete(String email);
 
 
 }

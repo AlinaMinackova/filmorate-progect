@@ -7,12 +7,12 @@ import lombok.NonNull;
 public class LikeFilm {
 
     @NonNull
-    private Integer id_film;
+    private String film;
     @NonNull
-    private String email_user;
+    private String user;
 
-    public LikeFilm(@NonNull Integer id_film, @NonNull String email_user) {
-        this.id_film = id_film;
-        this.email_user = email_user;
+    public LikeFilm(@NonNull String film, @NonNull String user) {
+        this.film = film;
+        this.user = user;
     }
 }

@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -27,53 +28,55 @@ public class FilmService {
     }
 
     public Film getByName(String name) {
-        return filmStorage.getByName(name);
+        Film film = filmStorage.getByName(name);
+        if (film == null) {
+            log.debug("фильм не найден");
+            throw new NotFoundFilmException("NotFoundFilm");
+        }
+        return film;
     }
 
     public Film create(Film film) throws ParseException {
+        checkExceptions(film);
+        Film film1 = filmStorage.getByName(film.getName());
+        if (film1 != null) {
+            log.debug("фильм уже существует");
+            throw new FilmAlreadyExistsException("FilmAlreadyExists");
+        }
         return filmStorage.create(film);
     }
 
-    public void delete(String name)  {
+    public void delete(String name) {
         filmStorage.delete(name);
     }
 
     public Film update(Film film) throws ParseException {
+        checkExceptions(film);
+        Film film1 = getByName(film.getName());
+        if (film1 == null) {
+            log.debug("фильм не найден");
+            throw new NotFoundFilmException("NotFoundFilm");
+        }
         return filmStorage.update(film);
     }
 
-    public List<Film> getTopFilms(int count){
-        if (count <= 0){
-            throw new IncorrectCountValueException("IncorrectCountValueException");
+    public void checkExceptions(Film film) throws ParseException {
+        if (film.getName().equals("")) {
+            log.debug("Пустое имя фильма");
+            throw new InvalidFilmNameException("InvalidFilmNameException");
         }
-        return null;
-//                .sorted(Film::compareTo)
-//                // сортировка по возрастанию
-//                //можно переопределить метод compareTo в классе Film
-//                //и просто вызвать sorted(Film::compareTo)
-//                //.sorted(Collections.reverseOrder())
-//                //переворачиваем
-//                .limit(count)
-//                .toList();
+        if (film.getDescription().length() > 200) {
+            log.debug("Описание фильма > 200 символов");
+            throw new MaxLengthDescriptionException("MaxLengthDescriptionExceptionMore200");
+        }
+        LocalDate date = LocalDate.parse("1895-12-28");
+        if (film.getReleaseDate().isBefore(date)) {
+            log.debug("Фильм не может быть выпущен раньше 28 декабря 1895 года");
+            throw new InvalidDateException("InvalidDateException");
+        }
+        if (film.getDuration() <= 0) {
+            log.debug("Длительность фильма <= 0");
+            throw new InvalidDurationException("InvalidDurationException");
+        }
     }
-//
-//    public void addLike(int id, int userId){
-//        log.info("Добавлен лайк к фильму {} пользователем {}", id, userId);
-//        Film film1 = getId(id);
-//        Set<Integer> set = film1.getLikes();
-//        set.add(userId);
-//    }
-
-//    public void deleteLike(int id, int userId){
-//        log.info("{} удалил лайк фильму {}", userId, id);
-//        Film film1 = getId(id);
-//        Set<Integer> set = film1.getLikes();
-//        try {
-//            set.remove(userId);
-//        } catch (Exception e){
-//            throw new NotFoundUserException("NotFoundUserException");
-//        }
-//    }
-
-
 }

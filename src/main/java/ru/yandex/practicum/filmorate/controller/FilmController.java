@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.text.ParseException;
@@ -37,16 +36,6 @@ public class FilmController {
     public Film getByName(@PathVariable String name) {
         return filmService.getByName(name);
     }
-
-//    @PutMapping("/{id}/like/{userId}")
-//    public void addLike(@PathVariable String id, @PathVariable String userId) {
-//        filmService.addLike(Integer.parseInt(id), Integer.parseInt(userId));
-//    }
-//
-//    @DeleteMapping("/{id}/like/{userId}")
-//    public void deleteLike(@PathVariable String id, @PathVariable String userId) {
-//        filmService.deleteLike(Integer.parseInt(id), Integer.parseInt(userId));
-//    }
 
     @DeleteMapping("/{name}")
     public void delete(@PathVariable String name) {
